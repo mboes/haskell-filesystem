@@ -107,20 +107,20 @@ directoryChunks path = pathDirectories path ++ [filenameChunk path]
 
 data Rules platformFormat = Rules
 	{ rulesName :: T.Text
-	
+
 	-- | Check if a 'FilePath' is valid; it must not contain any illegal
 	-- characters, and must have a root appropriate to the current
 	-- 'Rules'.
 	, valid :: FilePath -> Bool
-	
+
 	-- | Split a search path, such as @$PATH@ or @$PYTHONPATH@, into
 	-- a list of 'FilePath's.
 	, splitSearchPath :: platformFormat -> [FilePath]
-	
+
 	-- | splitSearchPathString is like 'splitSearchPath', but takes a string
 	-- encoded in the format used by @System.IO@.
 	, splitSearchPathString :: String -> [FilePath]
-	
+
 	-- | Attempt to convert a 'FilePath' to human&#x2010;readable text.
 	--
 	-- If the path is decoded successfully, the result is a 'Right'
@@ -140,7 +140,7 @@ data Rules platformFormat = Rules
 	--
 	-- Since: 0.2
 	, toText :: FilePath -> Either T.Text T.Text
-	
+
 	-- | Convert human&#x2010;readable text into a 'FilePath'.
 	--
 	-- This function ignores the user&#x2019;s locale, and assumes all
@@ -150,19 +150,19 @@ data Rules platformFormat = Rules
 	--
 	-- Since: 0.2
 	, fromText :: T.Text -> FilePath
-	
+
 	-- | Convert a 'FilePath' to a platform&#x2010;specific format,
 	-- suitable for use with external OS functions.
 	--
 	-- Since: 0.3
 	, encode :: FilePath -> platformFormat
-	
+
 	-- | Convert a 'FilePath' from a platform&#x2010;specific format,
 	-- suitable for use with external OS functions.
 	--
 	-- Since: 0.3
 	, decode :: platformFormat -> FilePath
-	
+
 	-- | Attempt to convert a 'FilePath' to a string suitable for use with
 	-- functions in @System.IO@. The contents of this string are
 	-- platform&#x2010;dependent, and are not guaranteed to be
@@ -171,7 +171,7 @@ data Rules platformFormat = Rules
 	--
 	-- Since: 0.3.1
 	, encodeString :: FilePath -> String
-	
+
 	-- | Attempt to parse a 'FilePath' from a string suitable for use
 	-- with functions in @System.IO@. Do not use this function for parsing
 	-- human&#x2010;readable paths, as the character set decoding is

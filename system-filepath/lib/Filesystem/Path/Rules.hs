@@ -14,7 +14,7 @@ module Filesystem.Path.Rules
 	, windows
 	, darwin
 	, darwin_ghc702
-	
+
 	-- * Type conversions
 	, toText
 	, fromText
@@ -22,7 +22,7 @@ module Filesystem.Path.Rules
 	, decode
 	, encodeString
 	, decodeString
-	
+
 	-- * Rule&#x2010;specific path properties
 	, valid
 	, splitSearchPath
@@ -94,7 +94,7 @@ posixToText :: FilePath -> Either T.Text T.Text
 posixToText p = if good then Right text else Left text where
 	good = and (map snd chunks)
 	text = T.concat (root : map fst chunks)
-	
+
 	root = rootText (pathRoot p)
 	chunks = intersperse (T.pack "/", True) (map unescape (directoryChunks p))
 
@@ -103,16 +103,16 @@ posixFromChunks chunks = FilePath root directories basename exts where
 	(root, pastRoot) = if P.null (head chunks)
 		then (Just RootPosix, tail chunks)
 		else (Nothing, chunks)
-	
+
 	(directories, filename)
 		| P.null pastRoot = ([], "")
 		| otherwise = case last pastRoot of
 			fn | fn == dot -> (goodDirs pastRoot, "")
 			fn | fn == dots -> (goodDirs pastRoot, "")
 			fn -> (goodDirs (init pastRoot), fn)
-	
+
 	goodDirs = filter (not . P.null)
-	
+
 	(basename, exts) = parseFilename filename
 
 posixFromText :: T.Text -> FilePath
@@ -284,7 +284,7 @@ uncToText p = T.concat (root : chunks) where
 winFromText :: T.Text -> FilePath
 winFromText text = if T.null text then empty else path where
 	path = FilePath root directories basename exts
-	
+
 	-- Windows has various types of absolute paths:
 	--
 	-- * C:\foo\bar -> DOS-style absolute path
@@ -307,17 +307,17 @@ winFromText text = if T.null text then empty else path where
 		else case T.stripPrefix (T.pack "\\??\\") text of
 			Just stripped -> parseDoubleQmark stripped
 			Nothing -> parseDosRoot text False
-	
+
 	(directories, filename)
 		| P.null pastRoot = ([], Nothing)
 		| otherwise = case last pastRoot of
 			fn | fn == T.pack "." -> (goodDirs pastRoot, Just "")
 			fn | fn == T.pack ".." -> (goodDirs pastRoot, Just "")
 			fn -> (goodDirs (init pastRoot), Just (escape fn))
-	
+
 	goodDirs :: [T.Text] -> [Chunk]
 	goodDirs = map escape . filter (not . T.null)
-	
+
 	(basename, exts) = case filename of
 		Just fn -> parseFilename fn
 		Nothing -> (Nothing, [])
@@ -330,7 +330,7 @@ stripUncasedPrefix prefix text = if T.toCaseFold prefix == T.toCaseFold (T.take 
 parseDosRoot :: T.Text -> Bool -> (Maybe Root, [T.Text])
 parseDosRoot text extended = parsed where
 	split = textSplitBy (\c -> c == '/' || c == '\\') text
-	
+
 	head' = head split
 	tail' = tail split
 	parsed = if T.null head'
@@ -338,7 +338,7 @@ parseDosRoot text extended = parsed where
 		else if T.any (== ':') head'
 			then (Just (parseDrive head'), tail')
 				else (Nothing, split)
-	
+
 	parseDrive c = RootWindowsVolume (toUpper (T.head c)) extended
 
 parseDoubleQmark :: T.Text -> (Maybe Root, [T.Text])
@@ -373,11 +373,11 @@ dosValid p = noReserved && validCharacters where
 		, "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6"
 		, "LPT7", "LPT8", "LPT9", "NUL", "PRN"
 		]
-	
+
 	noExt = p { pathExtensions = [] }
 	noReserved = flip all (directoryChunks noExt)
 		$ \fn -> notElem (map toUpper fn) reservedNames
-	
+
 	validCharacters = flip all (directoryChunks p)
 		$ not . any (`elem` reservedChars)
 
