@@ -14,7 +14,6 @@ module Filesystem.Path.Internal where
 import           Prelude hiding (FilePath)
 
 import           Control.DeepSeq (NFData, rnf)
-import qualified Control.Exception as Exc
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as B8
 import           Data.Char (chr, ord)
@@ -23,7 +22,6 @@ import           Data.List (intersperse)
 import           Data.Ord (comparing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import           Data.Text.Encoding.Error (UnicodeException)
 import           Data.Typeable (Typeable)
 
 -------------------------------------------------------------------------------
