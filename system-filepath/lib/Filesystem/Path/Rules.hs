@@ -106,12 +106,12 @@ posixFromChunks chunks = FilePath root directories basename exts where
 
 	(directories, filename)
 		| P.null pastRoot = ([], "")
-		| otherwise = case last pastRoot of
-			fn | fn == dot -> (goodDirs pastRoot, "")
-			fn | fn == dots -> (goodDirs pastRoot, "")
-			fn -> (goodDirs (init pastRoot), fn)
+		| P.null goodDirs = ([dot], "")
+                | last goodDirs == dots = (goodDirs, "")
+                | last pastRoot == "" = (goodDirs, "")
+		| otherwise = (init goodDirs, last goodDirs)
 
-	goodDirs = filter (not . P.null)
+	goodDirs = filter (\dir -> not (P.null dir || dir == dot)) pastRoot
 
 	(basename, exts) = parseFilename filename
 
